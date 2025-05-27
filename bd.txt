@@ -1,0 +1,38 @@
+-- Création de la base
+CREATE DATABASE IF NOT EXISTS gestion_db;
+USE gestion_db;
+
+-- Table des utilisateurs
+CREATE TABLE IF NOT EXISTS utilisateurs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    mot_de_passe VARCHAR(255)
+);
+
+-- Table des articles en stock
+CREATE TABLE IF NOT EXISTS stock (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    quantite INT NOT NULL DEFAULT 0
+);
+
+-- Table des commandes
+CREATE TABLE IF NOT EXISTS commandes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    utilisateur_id INT,
+    description TEXT,
+    date_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
+    statut ENUM('en_attente', 'terminee') DEFAULT 'en_attente',
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE SET NULL
+);
+
+-- Table des lignes de commandes
+CREATE TABLE IF NOT EXISTS lignes_commandes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    commande_id INT NOT NULL,
+    article_id INT NOT NULL,
+    quantite INT NOT NULL,
+    FOREIGN KEY (commande_id) REFERENCES commandes(id) ON DELETE CASCADE,
+    FOREIGN KEY (article_id) REFERENCES stock(id) ON DELETE CASCADE
+);
